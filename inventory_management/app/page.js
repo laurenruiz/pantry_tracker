@@ -98,10 +98,11 @@ export default function Home() {
   )
 
   return (
-    <Box sx={{ width: '100vw', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', gap: 2 }}>
+    <Box sx={{ width: '100vw', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center' }}>
       <Box sx={{ width: '100vw', bgcolor: '#FFE0EA', py: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Typography variant="h1" sx={{ fontWeight: 'bold' }}>Lauren's Lunchbox</Typography>
       </Box>
+      <Box sx={{ width: '100vw', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, pt: 2, backgroundImage: 'url(/pixel_bg.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'top center' }}>
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalBoxSx}>
           <Typography variant="h6">Add Item</Typography>
@@ -177,6 +178,7 @@ export default function Home() {
             </Box>
           ))}
         </Stack>
+      </Box>
       </Box>
     </Box>
   )

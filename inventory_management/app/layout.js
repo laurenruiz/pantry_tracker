@@ -5,6 +5,9 @@ import Providers from './providers'
 export const metadata = {
   title: "Lauren's Lunchbox",
   description: "Inventory management app",
+  icons: {
+    icon: '/icon.png',
+  },
 };
 
 export default function RootLayout({ children }) {
