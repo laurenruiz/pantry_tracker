@@ -20,6 +20,8 @@ export default function Home() {
   const [recipe, setRecipe] = useState('')
   const [loadingRecipe, setLoadingRecipe] = useState(false)
   const [recipeModalOpen, setRecipeModalOpen] = useState(false)
+  const [classifying, setClassifying] = useState(false)
+  const cameraInputRef = useRef(null)
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'))
@@ -101,6 +103,35 @@ export default function Home() {
     setLoadingRecipe(false)
     setRecipeModalOpen(true)
     fireConfetti()
+  }
+
+  const handleScanItem = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setClassifying(true)
+    try {
+      const url = URL.createObjectURL(file)
+      const img = new window.Image()
+      img.src = url
+      await new Promise(resolve => { img.onload = resolve })
+
+      await import('@tensorflow/tfjs')
+      const mobilenet = await import('@tensorflow-models/mobilenet')
+      const model = await mobilenet.load({ version: 2, alpha: 1.0 })
+      const predictions = await model.classify(img)
+      URL.revokeObjectURL(url)
+
+      const name = predictions[0].className.split(',')[0].toLowerCase().trim()
+      setItemName(name)
+      setItemQuantity(1)
+      setOpen(true)
+    } catch (err) {
+      console.error('Classification error:', err)
+      alert('Could not identify the item — try a clearer photo or add it manually.')
+    } finally {
+      setClassifying(false)
+      e.target.value = ''
+    }
   }
 
   const handleOpen = () => setOpen(true)
@@ -234,9 +265,24 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
+      <input
+        type="file"
+        accept="image/*"
+        capture="environment"
+        ref={cameraInputRef}
+        style={{ display: 'none' }}
+        onChange={handleScanItem}
+      />
       <Stack direction="row" spacing={2}>
         <Button variant="contained" onClick={handleOpen}>
           Add New Item
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => cameraInputRef.current?.click()}
+          disabled={classifying}
+        >
+          {classifying ? 'Scanning...' : 'Scan Item'}
         </Button>
         <Button variant="contained" onClick={getSuggestedRecipe} disabled={inventory.length === 0}>
           Suggest a Recipe
