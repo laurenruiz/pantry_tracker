@@ -219,7 +219,16 @@ export default function Home() {
       <Box sx={{ width: '100vw', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, pt: 2, backgroundImage: 'url(/pixel_bg.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'top center' }}>
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalBoxSx}>
-          <Typography variant="h6">Add Item</Typography>
+          <Stack sx={{ width: '100%', justifyContent: "space-between"}} direction="row" spacing={2}>
+            <Typography variant="h6">Add Item</Typography>
+            <Button
+              variant="contained"
+              onClick={() => cameraInputRef.current?.click()}
+              disabled={classifying}
+            >
+              {classifying ? 'Scanning...' : 'Scan Item'}
+            </Button>
+          </Stack>
           <TextField
             label="Item Name"
             variant="outlined"
@@ -276,13 +285,6 @@ export default function Home() {
       <Stack direction="row" spacing={2}>
         <Button variant="contained" onClick={handleOpen}>
           Add New Item
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => cameraInputRef.current?.click()}
-          disabled={classifying}
-        >
-          {classifying ? 'Scanning...' : 'Scan Item'}
         </Button>
         <Button variant="contained" onClick={getSuggestedRecipe} disabled={inventory.length === 0}>
           Suggest a Recipe
