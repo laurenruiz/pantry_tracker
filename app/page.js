@@ -144,11 +144,11 @@ export default function Home() {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '400px',
+    width: { xs: '90vw', sm: '400px' },
     bgcolor: 'white',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
+    p: { xs: 2, sm: 4 },
     display: 'flex',
     flexDirection: 'column',
     gap: 3,
@@ -185,7 +185,7 @@ export default function Home() {
         <Box sx={{
           position: 'absolute', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: '520px', maxHeight: '80vh', overflow: 'auto',
+          width: { xs: '92vw', sm: '520px' }, maxHeight: '80vh', overflow: 'auto',
           bgcolor: 'white', border: '2px solid #FFC0D4',
           boxShadow: 24, p: 4, borderRadius: 3,
           display: 'flex', flexDirection: 'column', gap: 3,
@@ -213,8 +213,8 @@ export default function Home() {
         </Box>
       </Modal>
 
-      <Box sx={{ width: '100vw', bgcolor: '#FFE0EA', py: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Typography variant="h1" sx={{ fontWeight: 'bold' }}>Lauren's Lunchbox</Typography>
+      <Box sx={{ width: '100vw', bgcolor: '#FFE0EA', py: { xs: 2, sm: 4 }, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Typography variant="h1" sx={{ fontWeight: 'bold', fontSize: { xs: '2rem', sm: '3rem', md: '4rem' } }}>Lauren's Lunchbox</Typography>
       </Box>
       <Box sx={{ width: '100vw', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, pt: 2, backgroundImage: 'url(/pixel_bg.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition: 'top center' }}>
       <Modal open={open} onClose={handleClose}>
@@ -282,7 +282,7 @@ export default function Home() {
         style={{ display: 'none' }}
         onChange={handleScanItem}
       />
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', justifyContent: 'center' }}>
         <Button variant="contained" onClick={handleOpen}>
           Add New Item
         </Button>
@@ -290,23 +290,23 @@ export default function Home() {
           Suggest a Recipe
         </Button>
       </Stack>
-      <Box sx={{ border: '1px solid #333' }}>
-        <Box sx={{ width: '800px', height: '100px', bgcolor: '#FFC0D4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Box sx={{ border: '1px solid #333', width: { xs: '100%', sm: '800px' } }}>
+        <Box sx={{ bgcolor: '#FFC0D4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Stack direction="row" spacing={2} sx={{ width: '100%', padding: 2 }}>
-            <Typography variant="h4" color="text.primary" sx={{ width: '50%', display: 'flex', alignItems: 'center' }}>Inventory Items</Typography>
-            <Box sx={{ width: '50%', height: '100px', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="h4" color="text.primary" sx={{ width: '50%', display: 'flex', alignItems: 'center', fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>Inventory Items</Typography>
+            <Box sx={{ width: '50%', display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField variant="outlined" placeholder="Search..." sx={{ flexGrow: 1 }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </Box>
           </Stack>
         </Box>
-        <Stack sx={{ width: '800px', height: '600px', overflow: 'auto' }} spacing={2}>
+        <Stack sx={{ width: '100%', height: { xs: 'auto', sm: '600px' }, maxHeight: { xs: '60vh', sm: '600px' }, overflow: 'auto' }} spacing={2}>
           {filterInventory.map(({ name, quantity }) => (
-            <Box key={name} sx={{ width: '100%', minHeight: '150px', bgcolor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 5 }}>
-              <Typography variant="h3" color="text.primary" sx={{ textAlign: 'left' }}>{name.charAt(0).toUpperCase() + name.slice(1)}</Typography>
-              <Typography variant="h3" color="text.primary" sx={{ textAlign: 'center' }}>{quantity}</Typography>
-              <Stack direction="row" spacing={2}>
-                <Button variant="contained" onClick={() => addItem(name)}>Add</Button>
-                <Button variant="contained" onClick={() => removeItem(name)}>Remove</Button>
+            <Box key={name} sx={{ width: '100%', minHeight: { xs: '70px', sm: '150px' }, bgcolor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: { xs: 2, sm: 5 } }}>
+              <Typography variant="h3" color="text.primary" sx={{ textAlign: 'left', fontSize: { xs: '1rem', sm: '1.75rem' }, flex: 1 }}>{name.charAt(0).toUpperCase() + name.slice(1)}</Typography>
+              <Typography variant="h3" color="text.primary" sx={{ textAlign: 'center', fontSize: { xs: '1rem', sm: '1.75rem' }, px: 1 }}>{quantity}</Typography>
+              <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }}>
+                <Button variant="contained" size="small" onClick={() => addItem(name)}>Add</Button>
+                <Button variant="contained" size="small" onClick={() => removeItem(name)}>Remove</Button>
                 <IconButton size="small" onClick={() => handleEditOpen(name)}>
                   <EditIcon />
                 </IconButton>
