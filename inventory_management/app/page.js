@@ -10,6 +10,7 @@ export default function Home() {
   const [inventory, setInventory] = useState([])
   const [open, setOpen] = useState(false)
   const [itemName, setItemName] = useState('')
+  const [itemQuantity, setItemQuantity] = useState(1)
   const [editOpen, setEditOpen] = useState(false)
   const [editItemName, setEditItemName] = useState('')
   const [editNewName, setEditNewName] = useState('')
@@ -28,15 +29,15 @@ export default function Home() {
     })
   }
 
-  const addItem = async (item) => {
+  const addItem = async (item, qty = 1) => {
     const docRef = doc(collection(firestore, 'inventory'), item)
     const docSnap = await getDoc(docRef)
 
     if (docSnap.exists()) {
       const { quantity } = docSnap.data()
-      await setDoc(docRef, { quantity: quantity + 1 })
+      await setDoc(docRef, { quantity: quantity + qty })
     } else {
-      await setDoc(docRef, { quantity: 1 })
+      await setDoc(docRef, { quantity: qty })
     }
     await updateInventory()
   }
@@ -97,24 +98,38 @@ export default function Home() {
   )
 
   return (
-    <Box sx={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+    <Box sx={{ width: '100vw', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ width: '100vw', bgcolor: '#FFE0EA', py: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Typography variant="h1" sx={{ fontWeight: 'bold' }}>Lauren's Lunchbox</Typography>
+      </Box>
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalBoxSx}>
           <Typography variant="h6">Add Item</Typography>
-          <Stack sx={{ width: '100%' }} direction="row" spacing={2}>
-            <TextField
-              variant="outlined"
-              value={itemName}
-              onChange={(e) => setItemName(e.target.value)}
-            />
-            <Button variant="outlined" onClick={() => {
-              addItem(itemName)
-              setItemName('')
-              handleClose()
-            }}>
-              Add
-            </Button>
-          </Stack>
+          <TextField
+            label="Item Name"
+            variant="outlined"
+            fullWidth
+            value={itemName}
+            onChange={(e) => setItemName(e.target.value)}
+          />
+          <TextField
+            label="Quantity"
+            variant="outlined"
+            fullWidth
+            type="number"
+            placeholder="1"
+            value={itemQuantity}
+            onChange={(e) => setItemQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+            slotProps={{ htmlInput: { min: 1 } }}
+          />
+          <Button variant="contained" fullWidth onClick={() => {
+            addItem(itemName, itemQuantity)
+            setItemName('')
+            setItemQuantity(1)
+            handleClose()
+          }}>
+            Add
+          </Button>
         </Box>
       </Modal>
       <Modal open={editOpen} onClose={handleEditClose}>
@@ -135,26 +150,23 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
-      <Box sx={{ width: '100%', bgcolor: '#ADD8E6', py: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Typography variant="h1" sx={{ color: '#333', fontWeight: 'bold' }}>Lauren's Lunchbox</Typography>
-      </Box>
       <Button variant="contained" onClick={handleOpen}>
         Add New Item
       </Button>
       <Box sx={{ border: '1px solid #333' }}>
-        <Box sx={{ width: '800px', height: '100px', bgcolor: '#ADD8E6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ width: '800px', height: '100px', bgcolor: '#FFC0D4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Stack direction="row" spacing={2} sx={{ width: '100%', padding: 2 }}>
-            <Typography variant="h4" color="#333" sx={{ width: '50%', display: 'flex', alignItems: 'center' }}>Inventory Items</Typography>
+            <Typography variant="h4" color="text.primary" sx={{ width: '50%', display: 'flex', alignItems: 'center' }}>Inventory Items</Typography>
             <Box sx={{ width: '50%', height: '100px', display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField variant="outlined" placeholder="Search..." sx={{ flexGrow: 1 }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </Box>
           </Stack>
         </Box>
-        <Stack sx={{ width: '800px', height: '300px', overflow: 'auto' }} spacing={2}>
+        <Stack sx={{ width: '800px', height: '600px', overflow: 'auto' }} spacing={2}>
           {filterInventory.map(({ name, quantity }) => (
             <Box key={name} sx={{ width: '100%', minHeight: '150px', bgcolor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 5 }}>
-              <Typography variant="h3" color="#333" sx={{ textAlign: 'center' }}>{name.charAt(0).toUpperCase() + name.slice(1)}</Typography>
-              <Typography variant="h3" color="#333" sx={{ textAlign: 'center' }}>{quantity}</Typography>
+              <Typography variant="h3" color="text.primary" sx={{ textAlign: 'center' }}>{name.charAt(0).toUpperCase() + name.slice(1)}</Typography>
+              <Typography variant="h3" color="text.primary" sx={{ textAlign: 'center' }}>{quantity}</Typography>
               <Stack direction="row" spacing={2}>
                 <Button variant="contained" onClick={() => addItem(name)}>Add</Button>
                 <Button variant="contained" onClick={() => removeItem(name)}>Remove</Button>
